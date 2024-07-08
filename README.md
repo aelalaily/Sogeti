@@ -5,12 +5,13 @@ This repository contains automated UI tests for Sogeti's website using Selenium 
 1. [Python 3.x](https://www.python.org/downloads/)
 2. [Selenium](https://pypi.org/project/selenium/)
 3. Google Chrome
-4. ChromeDriver (included in the repo, could be overwritten to be compatible with the installed version of Chrome)
+4. ChromeDriver (included in repo, can be overwritten for compatibility with the installed version of Chrome)
 
 # Setup
 1. Clone the repository: 
 
 `git clone <repository-url>`
+
 2. Install the Python package `requests`: 
 
 `pip install requests`
