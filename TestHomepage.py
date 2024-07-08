@@ -127,13 +127,13 @@ class TestHomepage(unittest.TestCase):
 
         # Verify all country-specific links are present and working
         country_links = driver.find_elements(By.XPATH, "//div[@id='country-list-id']/ul/li/a")
-        self.assertTrue(len(GLOBAL_PRESENCE) == len(country_links),
+        self.assertTrue(len(country_links) == len(GLOBAL_PRESENCE),
                         f"The number of countries in the worldwide list is {len(country_links)}, "
                         f"when {len(GLOBAL_PRESENCE)} was expected.")
 
         for country_link in country_links:
             self.assertTrue(country_link.text in GLOBAL_PRESENCE,
-                            f"{country_link.text} is in not the list of global presence.")
+                            f"{country_link.text} is in not expected in the worldwide list.")
             href = country_link.get_attribute("href")
 
             # Check if the link is working

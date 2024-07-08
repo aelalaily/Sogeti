@@ -36,7 +36,7 @@ def start_chromedriver():
     project_path = os.path.dirname(os.path.abspath(__file__))
     chromedriver_path = os.path.join(project_path, relative_chromedriver_path)
 
-    # Set ChromeDriver path and disable automation flags (for captcha check)
+    # Set ChromeDriver path and disable automation flags
     options = webdriver.ChromeOptions()
     options.add_argument("start-maximized")
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
