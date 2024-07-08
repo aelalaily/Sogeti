@@ -1,5 +1,6 @@
 import re
 import unittest
+import requests
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import Select, WebDriverWait
@@ -10,6 +11,7 @@ from common import (start_chromedriver, navigate_homepage, manage_cookies,
 
 class TestHomepage(unittest.TestCase):
     """A class for Sogeti's website UI automation test cases."""
+
     def setUp(self):
         self.driver = start_chromedriver()
 
@@ -31,18 +33,24 @@ class TestHomepage(unittest.TestCase):
         automation_link.click()
 
         # Verify navigation to Automation page
-        self.assertTrue(re.search(".*automation.*", driver.current_url), f"Navigated to Automation page: {driver.current_url}")
+        self.assertTrue(re.search(".*automation.*", driver.current_url),
+                        f"Failed to navigate to Automation page: {driver.current_url}")
 
         page_heading = driver.find_element(By.CLASS_NAME, "page-heading")
         automation_heading = page_heading.find_element(By.XPATH, "//title[text()='Automation']").is_displayed()
-        self.assertIsNotNone(automation_heading, "Automation title is present.")
+        self.assertIsNotNone(automation_heading, "Automation title is not present.")
 
         # Hover again over 'Services' link and verify selection
         services_link = driver.find_element(By.XPATH, "//span[text()='Services']")
         actions.move_to_element(services_link).perform()
 
+        services_litem = services_link.find_element(By.XPATH, "./parent::div//parent::li")
+        self.assertTrue('selected' in services_litem.get_attribute('class'),
+                        "Services item is not selected in the page header.")
+
         automation_litem = driver.find_element(By.XPATH, "//a[text()='Automation']/parent::li")
-        self.assertTrue('selected' in automation_litem.get_attribute('class'), "Automation item is selected in the page header.")
+        self.assertTrue('selected' in automation_litem.get_attribute('class'),
+                        "Automation item is not selected in the page header.")
 
     def test_contact_form(self):
         """Validate the functionality of the 'Contact us' form."""
@@ -80,7 +88,9 @@ class TestHomepage(unittest.TestCase):
         message.send_keys("This is a test message.")
 
         # Check the 'I agree' checkbox
-        agree_checkbox = driver.find_element(By.XPATH, "//input[@type='checkbox' and @value='I agree']/following-sibling::label[1]")
+        agree_checkbox = driver.find_element(
+            By.XPATH, "//input[@type='checkbox' and @value='I agree']/following-sibling::label[1]")
+        driver.execute_script("arguments[0].scrollIntoView();", agree_checkbox)
         agree_checkbox.click()
 
         # Check the recaptcha checkbox
@@ -97,9 +107,10 @@ class TestHomepage(unittest.TestCase):
         # Click the 'Submit' button and verify the 'Thank you' message
         submit_button = WebDriverWait(driver, STANDARD_TIMEOUT).until(
             EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']")))
+        driver.execute_script("arguments[0].scrollIntoView();", submit_button)
         submit_button.click()
 
-        WebDriverWait(STANDARD_DELAY)
+        driver.implicitly_wait(STANDARD_DELAY)
         self.assertIn("Thank you", driver.page_source)
 
     def test_listed_countries(self):
@@ -116,18 +127,19 @@ class TestHomepage(unittest.TestCase):
 
         # Verify all country-specific links are present and working
         country_links = driver.find_elements(By.XPATH, "//div[@id='country-list-id']/ul/li/a")
-        self.assertTrue(len(GLOBAL_PRESENCE) == len(country_links), f"The number of countries in the worldwide list is {len(country_links)}.")
+        self.assertTrue(len(GLOBAL_PRESENCE) == len(country_links),
+                        f"The number of countries in the worldwide list is {len(country_links)}, "
+                        f"when {len(GLOBAL_PRESENCE)} was expected.")
 
         for country_link in country_links:
-            self.assertTrue(country_link.text in GLOBAL_PRESENCE, f"{country_link.text} is in the list of global presence.")
+            self.assertTrue(country_link.text in GLOBAL_PRESENCE,
+                            f"{country_link.text} is in not the list of global presence.")
             href = country_link.get_attribute("href")
-            driver.get(href)
-            manage_cookies(driver)
-            ## check ##
-            navigate_homepage(driver)
-            worldwide_link = driver.find_element(By.XPATH, "//span[text()='Worldwide']")
-            worldwide_link.click()
 
+            # Check if the link is working
+            response = requests.get(href)
+            self.assertTrue(response.status_code == 200,
+                            f"{country_link.text} link {href} is not working. Status code: {response.status_code}")
 
     def tearDown(self):
         self.driver.quit()

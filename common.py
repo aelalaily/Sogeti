@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 # Site Constants
 HOMEPAGE = "https://www.sogeti.com/"
 GLOBAL_PRESENCE = ["BELGIUM", "FINLAND", "FRANCE", "GERMANY", "IRELAND", "LUXEMBOURG",
-                   "NETHERLANDS", "NORWAY", "SPAIN", "SWEDEN", "UK", "US"]
+                   "NETHERLANDS", "NORWAY", "SPAIN", "SWEDEN", "UK", "USA"]
 
 # Project Constants
 STANDARD_TIMEOUT = 10
@@ -43,7 +43,8 @@ def start_chromedriver():
     options.add_experimental_option('useAutomationExtension', False)
     service = Service(executable_path=chromedriver_path)
 
-    driver = webdriver.Chrome(service=service, options=options)
+    #driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Chrome(options=options)
     return driver
 
 
