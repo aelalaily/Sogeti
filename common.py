@@ -43,8 +43,7 @@ def start_chromedriver():
     options.add_experimental_option('useAutomationExtension', False)
     service = Service(executable_path=chromedriver_path)
 
-    #driver = webdriver.Chrome(service=service, options=options)
-    driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome(service=service, options=options)
     return driver
 
 

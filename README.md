@@ -43,6 +43,3 @@ This will run all the test cases defined in the TestHomepage.py file.
 1. Navigate to the Sogeti homepage.
 2. Click the 'Worldwide' dropdown link in the page header.
 3. Assert the expected countries and all country-specific Sogeti links are working.
-
-# License
-This project is licensed under the MIT License.
