@@ -1,19 +1,19 @@
 """Common library file used for constants, enums and functions."""
+import os
+import platform
 from selenium import webdriver
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # Site Constants
 HOMEPAGE = "https://www.sogeti.com/"
-GLOBAL_PRESENCE = ["Belgium", "Finland", "France", "Germany", "Ireland", "Luxembourg",
-                   "Netherlands", "Norway", "Spain", "Sweden", "UK", "US"]
+GLOBAL_PRESENCE = ["BELGIUM", "FINLAND", "FRANCE", "GERMANY", "IRELAND", "LUXEMBOURG",
+                   "NETHERLANDS", "NORWAY", "SPAIN", "SWEDEN", "UK", "US"]
 
 # Project Constants
-CHROMEDRIVER_PATH = "../drivers/chromedriver"
-
-# Time Constants
 STANDARD_TIMEOUT = 10
 STANDARD_DELAY = 5
 
@@ -21,14 +21,29 @@ STANDARD_DELAY = 5
 # Common Functions
 def start_chromedriver():
     """Initial call for a testscript function."""
-    # Setting options to enable recaptcha click
+    # Determine the operating system
+    os_type = platform.system()
+
+    # Set the relative path for the ChromeDriver based on the operating system
+    if os_type == 'Windows':
+        relative_chromedriver_path = 'drivers/chromedriver-win64.exe'
+    elif os_type == 'Darwin':  # 'Darwin' is the system name for macOS
+        relative_chromedriver_path = 'drivers/chromedriver-mac'
+    else:
+        raise Exception(f"Unsupported operating system: {os_type}")
+
+    # Convert the relative path to an absolute path
+    project_path = os.path.dirname(os.path.abspath(__file__))
+    chromedriver_path = os.path.join(project_path, relative_chromedriver_path)
+
+    # Set ChromeDriver path and disable automation flags (for captcha check)
     options = webdriver.ChromeOptions()
     options.add_argument("start-maximized")
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option('useAutomationExtension', False)
+    service = Service(executable_path=chromedriver_path)
 
-    driver = webdriver.Chrome()
-    driver.maximize_window()
+    driver = webdriver.Chrome(service=service, options=options)
     return driver
 
 
