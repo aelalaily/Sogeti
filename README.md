@@ -10,7 +10,7 @@ This repository contains automated UI tests for Sogeti's website using Selenium 
 # Setup
 1. Clone the repository: 
 
-`git clone <repository-url>`
+`git clone https://github.com/aelalaily/Sogeti.git`
 
 2. Install the Python package `requests`: 
 
