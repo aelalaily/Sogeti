@@ -107,7 +107,7 @@ class TestHomepage(unittest.TestCase):
             print("TimeoutException: The recaptcha checkbox was not clickable within the specified timeout.")
 
         # Breaking the principles of test automation by introducing an implicit wait
-        # for manual captcha challenege intervention. A better workaround would be
+        # for manual captcha challenge intervention. A better workaround would be
         # to have a testing version of the website, that does not require a captcha
         # challenge for form submission
         driver.implicitly_wait(120)

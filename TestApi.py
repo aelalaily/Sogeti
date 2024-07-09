@@ -5,10 +5,12 @@ import requests
 import unittest
 from common import INPUT_CSV_PATH, ZIPPOPOTAM_ROOT
 
+
 class TestApi(unittest.TestCase):
     """A class to test API responses for given postcodes and place names
     using the Zippopotam API.
     """
+
     def setUp(self, csv_path=None):
         if csv_path is None:
             current_path = os.path.dirname(os.path.abspath(__file__))
@@ -36,6 +38,7 @@ class TestApi(unittest.TestCase):
         """
         test_post_code = '70597'
         test_place_name = 'Stuttgart Degerloch'
+
         url = f"{ZIPPOPOTAM_ROOT}/de/bw/stuttgart"
         response = requests.get(url)
 
@@ -52,14 +55,13 @@ class TestApi(unittest.TestCase):
         # Check the response country and state
         self.assertEqual(data['country'], 'Germany',
                          f"Country response was: {data['country']}.")
-        self.assertEqual(data['state'], 'Baden-Württemberg', 
+        self.assertEqual(data['state'], 'Baden-Württemberg',
                          f"State response was: {data['state']}.")
 
         # Check the existence of the test values denoted by {test_post_code} and {test_place_name}
         places = [place for place in data['places']
-                  if place['post code'] == test_post_code]
-        self.assertIn(test_place_name, 'Stuttgart Degerloch',
-                      f"{test_place_name} was not found in {test_post_code}.")
+                  if place['post code'] == test_post_code and place['place name'] == test_place_name]
+        self.assertIsNotNone(places,f"{test_place_name} was not found in {test_post_code}.")
 
     def test_input_values_api(self):
         """Test the API response for various countries and postcodes specified in the input CSV file.
@@ -85,6 +87,7 @@ class TestApi(unittest.TestCase):
             places = [place['place name'] for place in data['places']]
             self.assertIn(expected_place, places,
                           f"{expected_place} was not found in {post_code}, {country}.")
+
 
 if __name__ == "__main__":
     unittest.main(argv=sys.argv[:1])

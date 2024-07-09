@@ -36,7 +36,7 @@ To run the GUI tests, execute the following command in the project directory:
 3. Scroll down to the 'Contact us' form.
 4. Fill the form with random generated data.
 5. Check the 'I agree' checkbox.
-6. Delay to allow for human solving of captcha challenge.
+6. Delay to allow for non-automated solving of captcha challenge.
 7. Click the 'Sumbit' button and verify the 'Thank you' message is displayed.
 
 ## Test Case 3: Listed Countries
@@ -57,3 +57,14 @@ To run the tests with another CSV input file:
 
 # Test Cases
 ## Test Case 1: Stuttgart
+1. Send a request to the endpoint "http://api.zippopotam.us/de/bw/stuttgart".
+2. Verify the status code is 200, content type is JSON and the response time is under 1 second.
+3. Verify the country in the response is 'Germany' and the state in the response is 'Baden-Württemberg'.
+4. Verify the response contains 'Stuttgart Degerloch' with postcode '70597'.
+
+## Test Case 2: Input Values 
+1. Read the test data from the input CSV file.
+2. For each entry, consisting of country, postcode, and expected place:
+   - Send a GET request to the endpoint "http://api.zippopotam.us/{country}/{postcode}".
+   - Verify the status code is 200, content type is JSON and the response time is under 1 second.
+   - Verify the response contains the expected place name.
