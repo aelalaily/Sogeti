@@ -16,13 +16,12 @@ This repository contains automated UI tests for Sogeti's website using Selenium 
 
 `pip install requests`
 
-# Running the Tests
+# Running the GUI Tests
 
-To run the tests, execute the following command in the project directory:
+To run the GUI tests, execute the following command in the project directory:
 
 `python TestHomepage.py`
 
-This will run all the test cases defined in the TestHomepage.py file.
 
 # Test Cases
 ## Test Case 1: Automation Navigation
@@ -44,3 +43,17 @@ This will run all the test cases defined in the TestHomepage.py file.
 1. Navigate to the Sogeti homepage.
 2. Click the 'Worldwide' dropdown link in the page header.
 3. Assert the expected countries and all country-specific Sogeti links are working.
+
+
+# Running the API Tests
+
+To run the API tests with the default CSV input file, execute the following command in the project directory:
+
+`python TestApi.py`
+
+To run the tests with another CSV input file:
+
+`python TestApi.py path_to_csv_input_file.csv`
+
+# Test Cases
+## Test Case 1: Stuttgart

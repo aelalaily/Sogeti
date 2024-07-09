@@ -154,7 +154,7 @@ class TestHomepage(unittest.TestCase):
             # Check if the link is working
             response = requests.get(href)
             self.assertTrue(response.status_code == 200,
-                            f"{country_link.text} link {href} is not working. Status code: {response.status_code}")
+                            f"{country_link.text} link {href} is not working. Status code: {response.status_code}.")
 
     def tearDown(self):
         self.driver.quit()

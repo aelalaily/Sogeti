@@ -13,6 +13,10 @@ HOMEPAGE = "https://www.sogeti.com/"
 GLOBAL_PRESENCE = ["BELGIUM", "FINLAND", "FRANCE", "GERMANY", "IRELAND", "LUXEMBOURG",
                    "NETHERLANDS", "NORWAY", "SPAIN", "SWEDEN", "UK", "USA"]
 
+# API Test Constants
+ZIPPOPOTAM_ROOT = "http://api.zippopotam.us"
+INPUT_CSV_PATH = "input_data.csv"
+
 # Project Constants
 STANDARD_TIMEOUT = 10
 STANDARD_DELAY = 5
