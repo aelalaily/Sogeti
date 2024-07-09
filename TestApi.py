@@ -61,7 +61,7 @@ class TestApi(unittest.TestCase):
         # Check the existence of the test values denoted by {test_post_code} and {test_place_name}
         places = [place for place in data['places']
                   if place['post code'] == test_post_code and place['place name'] == test_place_name]
-        self.assertIsNotNone(places,f"{test_place_name} was not found in {test_post_code}.")
+        self.assertIsNotNone(places, f"{test_place_name} was not found in {test_post_code}.")
 
     def test_input_values_api(self):
         """Test the API response for various countries and postcodes specified in the input CSV file.
