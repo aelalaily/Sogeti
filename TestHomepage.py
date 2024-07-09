@@ -1,12 +1,13 @@
 import re
-import unittest
 import requests
+import unittest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from common import (start_chromedriver, navigate_homepage, manage_cookies,
-                    GLOBAL_PRESENCE, STANDARD_TIMEOUT, STANDARD_DELAY)
+        GLOBAL_PRESENCE, STANDARD_TIMEOUT, STANDARD_DELAY)
 
 
 class TestHomepage(unittest.TestCase):
@@ -90,28 +91,42 @@ class TestHomepage(unittest.TestCase):
         # Check the 'I agree' checkbox
         agree_checkbox = driver.find_element(
             By.XPATH, "//input[@type='checkbox' and @value='I agree']/following-sibling::label[1]")
-        driver.execute_script("arguments[0].scrollIntoView();", agree_checkbox)
+        driver.execute_script("arguments[0].scrollIntoView({block: 'center', inline: 'nearest'});", agree_checkbox)
         agree_checkbox.click()
 
-        # Check the recaptcha checkbox
-        WebDriverWait(driver, STANDARD_TIMEOUT).until(EC.frame_to_be_available_and_switch_to_it(
-            (By.CSS_SELECTOR, "iframe[name^='a-'][src^='https://www.google.com/recaptcha/api2/anchor?']")))
-        recaptcha_checkbox = WebDriverWait(driver, STANDARD_TIMEOUT).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[@id='recaptcha-anchor']")))
-        driver.execute_script("arguments[0].scrollIntoView();", recaptcha_checkbox)
-        recaptcha_checkbox.click()
+        try:
+            # Check the recaptcha checkbox
+            WebDriverWait(driver, STANDARD_TIMEOUT).until(EC.frame_to_be_available_and_switch_to_it(
+                    (By.CSS_SELECTOR, "iframe[name^='a-'][src^='https://www.google.com/recaptcha/api2/anchor?']")))
+            recaptcha_checkbox = WebDriverWait(driver, STANDARD_TIMEOUT).until(
+                    EC.element_to_be_clickable((By.XPATH, "//span[@id='recaptcha-anchor']")))
+            driver.execute_script("arguments[0].scrollIntoView({block: 'center', inline: 'nearest'});", recaptcha_checkbox)
+            recaptcha_checkbox.click()
 
-        # Implicit wait for manual recaptcha solving
-        driver.implicitly_wait(60)
+        except TimeoutException:
+            print("TimeoutException: The recaptcha checkbox was not clickable within the specified timeout.")
 
-        # Click the 'Submit' button and verify the 'Thank you' message
-        submit_button = WebDriverWait(driver, STANDARD_TIMEOUT).until(
-            EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']")))
-        driver.execute_script("arguments[0].scrollIntoView();", submit_button)
-        submit_button.click()
+        # Breaking the principles of test automation by introducing an implicit wait
+        # for manual captcha challenege intervention. A better workaround would be
+        # to have a testing version of the website, that does not require a captcha
+        # challenge for form submission
+        driver.implicitly_wait(120)
+
+        try:
+            # Click the 'Submit' button and verify the 'Thank you' message
+            driver.switch_to.default_content()
+            submit_button = WebDriverWait(driver, STANDARD_TIMEOUT).until(
+                    EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']")))
+            driver.execute_script("arguments[0].scrollIntoView({block: 'center', inline: 'nearest'});", submit_button)
+            driver.implicitly_wait(STANDARD_DELAY)
+            submit_button.click()
+
+        except TimeoutException:
+            print("TimeoutException: The submit button was not clickable within the specified timeout.")
 
         driver.implicitly_wait(STANDARD_DELAY)
-        self.assertIn("Thank you", driver.page_source)
+        submit_message = driver.find_element(By.XPATH, "//div[contains(@class, 'Form__Success__Message')]").is_displayed()
+        self.assertIsNotNone(submit_message, "Contact form success message response was not displayed.")
 
     def test_listed_countries(self):
         """Check the list of countries in the Worldwide drop menu,

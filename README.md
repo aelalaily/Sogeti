@@ -37,7 +37,7 @@ This will run all the test cases defined in the TestHomepage.py file.
 3. Scroll down to the 'Contact us' form.
 4. Fill the form with random generated data.
 5. Check the 'I agree' checkbox.
-6. Delay the next step to allow for human-solving of recaptcha challenge.
+6. Delay to allow for human solving of captcha challenge.
 7. Click the 'Sumbit' button and verify the 'Thank you' message is displayed.
 
 ## Test Case 3: Listed Countries
