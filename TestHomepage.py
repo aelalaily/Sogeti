@@ -127,12 +127,13 @@ class TestHomepage(unittest.TestCase):
         driver.implicitly_wait(STANDARD_DELAY)
 
         try:
-            submit_message = driver.find_element(By.XPATH, "//div[contains(@class, 'Form__Success__Message')]").is_displayed()
+            submit_message = WebDriverWait(driver, STANDARD_TIMEOUT).until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'Form__Success__Message')]")))
             self.assertIsNotNone(submit_message, "Contact form success message response was not displayed.")
 
         except TimeoutException:
-            print("TimeoutException: The success message was not displayed.")
-
+                    print("TimeoutException: The success message element was not displayed"
+                          "within the specified timeout.")
         except NoSuchElementException:
             print("NoSuchElementException: The success message element was not found.")
 
