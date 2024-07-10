@@ -8,7 +8,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-# Site Constants
+# GUI Test Constants
 HOMEPAGE = "https://www.sogeti.com/"
 GLOBAL_PRESENCE = ["BELGIUM", "FINLAND", "FRANCE", "GERMANY", "IRELAND", "LUXEMBOURG",
                    "NETHERLANDS", "NORWAY", "SPAIN", "SWEDEN", "UK", "USA"]

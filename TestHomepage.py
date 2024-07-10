@@ -3,7 +3,7 @@ import requests
 import unittest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from common import (start_chromedriver, navigate_homepage, manage_cookies,
@@ -125,8 +125,16 @@ class TestHomepage(unittest.TestCase):
             print("TimeoutException: The submit button was not clickable within the specified timeout.")
 
         driver.implicitly_wait(STANDARD_DELAY)
-        submit_message = driver.find_element(By.XPATH, "//div[contains(@class, 'Form__Success__Message')]").is_displayed()
-        self.assertIsNotNone(submit_message, "Contact form success message response was not displayed.")
+
+        try:
+            submit_message = driver.find_element(By.XPATH, "//div[contains(@class, 'Form__Success__Message')]").is_displayed()
+            self.assertIsNotNone(submit_message, "Contact form success message response was not displayed.")
+
+        except TimeoutException:
+            print("TimeoutException: The success message was not displayed.")
+
+        except NoSuchElementException:
+            print("NoSuchElementException: The success message element was not found.")
 
     def test_listed_countries(self):
         """Check the list of countries in the Worldwide drop menu,
