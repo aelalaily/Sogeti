@@ -1,5 +1,6 @@
 """Common library file used for constants, enums and functions."""
 import os
+import requests
 import platform
 from selenium import webdriver
 from selenium.common import TimeoutException
@@ -65,3 +66,30 @@ def manage_cookies(driver):
 
     except TimeoutException:
         print("Cookie consent div is not visible.")
+
+
+def solve_recaptcha(driver, site_key):
+    """Solve the reCAPTCHA challenge using the 2Captcha service."""
+    api_key = '31a965afc79772ce70b5a0a7fe09ae8c'
+    url = driver.current_url
+    session = requests.Session()
+    
+    # Requesting the reCAPTCHA to be solved
+    captcha_id = session.post("http://2captcha.com/in.php", data={
+        'key': api_key,
+        'method': 'userrecaptcha',
+        'googlekey': site_key,
+        'pageurl': url
+    }).text.split('|')[1]
+    
+    # Retrieving the solved reCAPTCHA
+    while True:
+        response = session.get(f"http://2captcha.com/res.php?key={api_key}&action=get&id={captcha_id}").text
+
+        if response == 'CAPCHA_NOT_READY':
+            continue
+
+        if 'ERROR' in response:
+            raise Exception(response)
+
+        return response.split('|')[1]

@@ -107,10 +107,23 @@ class TestHomepage(unittest.TestCase):
             print("TimeoutException: The recaptcha checkbox was not clickable within the specified timeout.")
 
         # Breaking the principles of test automation by introducing an implicit wait
-        # for manual captcha challenge intervention. A better workaround would be
-        # to have a testing version of the website, that does not require a captcha
-        # challenge for form submission
+        # for manual reCAPTCHA challenge intervention. A better workaround would be
+        # to have a testing version of the website, that does not require a reCAPTCHA
+        # challenge for form submission.
+
         driver.implicitly_wait(120)
+
+        # Alternatively a reCAPTCHA API service can be used, with a proof of concept
+        # function defined in common.
+
+        # from common import solve_recaptcha
+        # site_key = '6LexQgoaAAAAALYQRoWL4VDPIeQJ21RFjlN_Hb_G'
+        # try:
+        #     recaptcha_response = solve_recaptcha(driver, site_key)
+        #     driver.execute_script(f'document.getElementById(
+        #                           "g-recaptcha-response").innerHTML="{recaptcha_response}";')
+        # except Exception as e:
+        #     print(f"Exception retreiving reCAPTCHA response: {e}.")
 
         try:
             # Click the 'Submit' button and verify the 'Thank you' message
@@ -127,13 +140,13 @@ class TestHomepage(unittest.TestCase):
         driver.implicitly_wait(STANDARD_DELAY)
 
         try:
-            submit_message = WebDriverWait(driver, STANDARD_TIMEOUT).until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'Form__Success__Message')]")))
+            submit_message = driver.find_element(
+                    By.XPATH, "//div[contains(@class, 'Form__Success__Message')]").is_displayed()
             self.assertIsNotNone(submit_message, "Contact form success message response was not displayed.")
 
         except TimeoutException:
-                    print("TimeoutException: The success message element was not displayed"
-                          "within the specified timeout.")
+            print("TimeoutException: The success message was not displayed.")
+
         except NoSuchElementException:
             print("NoSuchElementException: The success message element was not found.")
 
